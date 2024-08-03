@@ -41,6 +41,10 @@ function main() {
 
   const u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
 
+  if (!u_FragColor) {
+    console.log('Failed to get the storage location of u_FragColor');
+    return;
+  }
 
   canvas.onmousedown = function (ev) { click(ev, gl, canvas, a_Position, u_FragColor); };
 
