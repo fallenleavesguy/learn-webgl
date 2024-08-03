@@ -37,16 +37,7 @@ function main() {
   }
 
 
-  var a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize');
-
-  if (a_PointSize < 0) {
-    console.log('Failed to get the storage location of a_PointSize');
-    return;
-  }
-
   canvas.onmousedown = function (ev) { click(ev, gl, canvas, a_Position); };
-
-  gl.vertexAttrib1f(a_PointSize, 10.0);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -66,16 +57,27 @@ function click(ev, gl, canvas, a_Position) {
 
   x = ((x - rect.left) - halfWidth) / halfWidth;
   y = (halfHeight - (y - rect.top)) / halfHeight;
+  const size = 10 * Math.random() + 5;
 
-  g_points.push(x);
-  g_points.push(y);
+  g_points.push([x, y, size]);
 
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   const len = g_points.length;
 
-  for (let i = 0; i < len; i += 2) {
-    gl.vertexAttrib2f(a_Position, g_points[i], g_points[i + 1]);
+  for (let i = 0; i < len; i++) {
+    const xy = g_points[i];
+    gl.vertexAttrib2f(a_Position, xy[0], xy[1]);
+
+    var a_PointSize = gl.getAttribLocation(gl.program, 'a_PointSize');
+
+    if (a_PointSize < 0) {
+      console.log('Failed to get the storage location of a_PointSize');
+      return;
+    }
+
+    gl.vertexAttrib1f(a_PointSize, xy[2]);
+
     gl.drawArrays(gl.POINTS, 0, 1);
   }
 }
